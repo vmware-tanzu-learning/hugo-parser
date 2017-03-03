@@ -68,6 +68,14 @@ func main() {
 	fileInfo, err := os.Lstat(sourceDir)
 	mode := fileInfo.Mode()
 
+	fullSrc := learningPath + "/index.md"
+	fullTgt := targetDir + "/index.md"
+	if !exists(targetDir) {
+		os.MkdirAll(targetDir, mode)
+	}
+	fmt.Println(fullSrc + " to " + fullTgt)
+	err = shutil.CopyFile(fullSrc, fullTgt, false)
+
 	for i, mapping := range structure.Mappings {
 		fullSrc := learningPath + "/" + mapping.Name + "/index.md"
 		fullTgtDir := targetDir + "/" + strconv.Itoa(i+1) + "-" + mapping.Name
