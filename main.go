@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 
 	shutil "github.com/termie/go-shutil"
 	yaml "gopkg.in/yaml.v2"
@@ -66,10 +67,10 @@ func main() {
 	check(err)
 	exercisePath := fmt.Sprintf("%s/exercises", sourceDir)
 
-	for _, mapping := range structure.Mappings {
+	for i, mapping := range structure.Mappings {
 		for _, exercise := range mapping.Exercises {
 			fullSrc := exercisePath + "/" + exercise + "/README.md"
-			fullTgt := targetDir + "/" + mapping.Name + "/" + exercise + ".md"
+			fullTgt := targetDir + "/" + strconv.Itoa(i+1) + "-" + mapping.Name + "/" + exercise + ".md"
 			fmt.Println(fullSrc + " to " + fullTgt)
 			err = shutil.CopyFile(fullSrc, fullTgt, false)
 			check(err)
