@@ -1,0 +1,8 @@
+mappings:
+- name: A
+  exercises:
+  - B
+  - C
+- name: D
+  exercises:
+  - E
