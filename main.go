@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	shutil "github.com/termie/go-shutil"
@@ -23,6 +24,13 @@ type Structure struct {
 func check(e error) {
 	if e != nil {
 		panic(e)
+	}
+}
+
+func cleanDirectory(dir string) {
+	files, _ := filepath.Glob(dir + "/*")
+	for _, file := range files {
+		os.RemoveAll(file)
 	}
 }
 
@@ -53,21 +61,25 @@ func main() {
 		log.Fatal("Unable to unmarshal " + filename)
 	}
 	learningPath := fmt.Sprintf("%s/learning-path", sourceDir)
-	oldTarget := targetDir + "_old"
-	if exists(oldTarget) {
-		os.RemoveAll(oldTarget)
-	}
-	if exists(targetDir) {
-		fmt.Println("Found " + targetDir + ", renaming...")
-		err = os.Rename(targetDir, oldTarget)
-		check(err)
-	}
-
-	err = shutil.CopyTree(learningPath, targetDir, nil)
-	check(err)
 	exercisePath := fmt.Sprintf("%s/exercises", sourceDir)
 
+	cleanDirectory(targetDir)
+
+	fileInfo, err := os.Lstat(sourceDir)
+	mode := fileInfo.Mode()
+
 	for i, mapping := range structure.Mappings {
+		fullSrc := learningPath + "/" + mapping.Name + "/index.md"
+		fullTgtDir := targetDir + "/" + strconv.Itoa(i+1) + "-" + mapping.Name
+		fullTgt := fullTgtDir + "/index.md"
+		if !exists(fullTgtDir) {
+			os.MkdirAll(fullTgtDir, mode)
+		}
+
+		fmt.Println(fullSrc + " to " + fullTgt)
+
+		err = shutil.CopyFile(fullSrc, fullTgt, false)
+		check(err)
 		for _, exercise := range mapping.Exercises {
 			fullSrc := exercisePath + "/" + exercise + "/README.md"
 			fullTgt := targetDir + "/" + strconv.Itoa(i+1) + "-" + mapping.Name + "/" + exercise + ".md"
