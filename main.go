@@ -75,6 +75,11 @@ func main() {
 	}
 	fmt.Println(fullSrc + " to " + fullTgt)
 	err = shutil.CopyFile(fullSrc, fullTgt, false)
+	check(err)
+	fullSrc = learningPath + "/Staticfile.auth"
+	fullTgt = targetDir + "/Staticfile.auth"
+	err = shutil.CopyFile(fullSrc, fullTgt, false)
+	check(err)
 
 	for i, mapping := range structure.Mappings {
 		fullSrc := learningPath + "/" + mapping.Name + "/index.md"
