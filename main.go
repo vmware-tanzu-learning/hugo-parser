@@ -68,16 +68,11 @@ func main() {
 	fileInfo, err := os.Lstat(sourceDir)
 	mode := fileInfo.Mode()
 
-	fullSrc := learningPath + "/index.md"
-	fullTgt := targetDir + "/index.md"
+	fullSrc := learningPath + "/Staticfile.auth"
+	fullTgt := targetDir + "/Staticfile.auth"
 	if !exists(targetDir) {
 		os.MkdirAll(targetDir, mode)
 	}
-	fmt.Println(fullSrc + " to " + fullTgt)
-	err = shutil.CopyFile(fullSrc, fullTgt, false)
-	check(err)
-	fullSrc = learningPath + "/Staticfile.auth"
-	fullTgt = targetDir + "/Staticfile.auth"
 	err = shutil.CopyFile(fullSrc, fullTgt, false)
 	check(err)
 
