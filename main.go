@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 
 	shutil "github.com/termie/go-shutil"
 	yaml "gopkg.in/yaml.v2"
@@ -77,8 +76,9 @@ func main() {
 	check(err)
 
 	for i, mapping := range structure.Mappings {
+		index := fmt.Sprintf("%02d", i+1)
 		fullSrc := learningPath + "/" + mapping.Name + "/index.md"
-		fullTgtDir := targetDir + "/" + strconv.Itoa(i+1) + "-" + mapping.Name
+		fullTgtDir := targetDir + "/" + index + "-" + mapping.Name
 		fullTgt := fullTgtDir + "/index.md"
 		if !exists(fullTgtDir) {
 			os.MkdirAll(fullTgtDir, mode)
@@ -90,7 +90,7 @@ func main() {
 		check(err)
 		for _, exercise := range mapping.Exercises {
 			fullSrc := exercisePath + "/" + exercise + "/README.md"
-			fullTgt := targetDir + "/" + strconv.Itoa(i+1) + "-" + mapping.Name + "/" + exercise + ".md"
+			fullTgt := targetDir + "/" + index + "-" + mapping.Name + "/" + exercise + ".md"
 			fmt.Println(fullSrc + " to " + fullTgt)
 			err = shutil.CopyFile(fullSrc, fullTgt, false)
 			check(err)
