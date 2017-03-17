@@ -67,13 +67,9 @@ func main() {
 	fileInfo, err := os.Lstat(sourceDir)
 	mode := fileInfo.Mode()
 
-	fullSrc := learningPath + "/Staticfile.auth"
-	fullTgt := targetDir + "/Staticfile.auth"
 	if !exists(targetDir) {
 		os.MkdirAll(targetDir, mode)
 	}
-	err = shutil.CopyFile(fullSrc, fullTgt, false)
-	check(err)
 
 	for i, mapping := range structure.Mappings {
 		index := fmt.Sprintf("%02d", i+1)
