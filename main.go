@@ -86,12 +86,19 @@ func main() {
 
 		err = addWeightToHeader(fullSrc, fullTgt, i+1)
 		check(err)
-		for _, exercise := range mapping.Exercises {
+		for j, exercise := range mapping.Exercises {
+			subIndex := fmt.Sprintf("%02d", j+1)
 			fullSrc := exercisePath + "/" + exercise + "/README.md"
-			fullTgt := targetDir + "/" + index + "-" + mapping.Name + "/" + exercise + ".md"
+			fullTgt := targetDir + "/" + index + "-" + mapping.Name + "/" + subIndex + "-" + exercise + ".md"
 			fmt.Println(fullSrc + " to " + fullTgt)
 			err = shutil.CopyFile(fullSrc, fullTgt, false)
 			check(err)
+			fullSrcImages := exercisePath + "/" + exercise + "/images"
+			if _, err := os.Stat(fullSrcImages); err == nil {
+				fullTgtImages := targetDir + "/" + index + "-" + mapping.Name + "/images"
+				err = shutil.CopyTree(fullSrcImages, fullTgtImages, nil)
+				check(err)
+			}
 		}
 	}
 

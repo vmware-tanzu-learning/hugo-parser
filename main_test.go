@@ -66,8 +66,8 @@ var _ = Describe("hugo-parser", func() {
 			result := `mappings:
 - name: A
   exercises:
-  - B
   - C
+  - B
 - name: D
   exercises:
   - E`
