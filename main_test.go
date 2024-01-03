@@ -34,7 +34,7 @@ func getPaths(dirName string) ([]string, error) {
 
 var _ = Describe("hugo-parser", func() {
 	BeforeSuite(func() {
-		cliPath, err = Build("github.com/engineerbetter/hugo-parser")
+		cliPath, err = Build("github.com/EngineerBetter/hugo-parser")
 		Ω(err).ShouldNot(HaveOccurred(), "Error building source")
 	})
 

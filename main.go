@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	shutil "github.com/termie/go-shutil"
 	yaml "gopkg.in/yaml.v2"
@@ -50,7 +52,7 @@ func main() {
 	sourceDir := os.Args[2]
 	targetDir := os.Args[3]
 
-	mappingContents, err := ioutil.ReadFile(filename)
+	mappingContents, err := os.ReadFile(filename)
 	check(err)
 	fmt.Print(string(mappingContents))
 
@@ -75,14 +77,14 @@ func main() {
 		index := fmt.Sprintf("%02d", i+1)
 		fullSrc := learningPath + "/" + mapping.Name + "/index.md"
 		fullTgtDir := targetDir + "/" + index + "-" + mapping.Name
-		fullTgt := fullTgtDir + "/index.md"
+		fullTgt := fullTgtDir + "/_index.md"
 		if !exists(fullTgtDir) {
 			os.MkdirAll(fullTgtDir, mode)
 		}
 
 		fmt.Println(fullSrc + " to " + fullTgt)
 
-		err = shutil.CopyFile(fullSrc, fullTgt, false)
+		err = addWeightToHeader(fullSrc, fullTgt, i+1)
 		check(err)
 		for _, exercise := range mapping.Exercises {
 			fullSrc := exercisePath + "/" + exercise + "/README.md"
@@ -93,4 +95,46 @@ func main() {
 		}
 	}
 
+}
+
+func linesFromFile(filePath string) ([]string, error) {
+	f, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return linesFromReader(f)
+}
+
+func linesFromReader(r io.Reader) ([]string, error) {
+	var lines []string
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return lines, nil
+}
+
+func addWeightToHeader(source, target string, weight int) error {
+	lines, err := linesFromFile(source)
+	if err != nil {
+		return err
+	}
+
+	seenMarker := false
+	fileContent := ""
+	for _, line := range lines {
+		fileContent += line
+		fileContent += "\n"
+		if strings.HasPrefix(line, "+++") && !seenMarker {
+			fileContent += fmt.Sprintf("weight = %d\n", weight)
+			seenMarker = true
+		}
+	}
+
+	return os.WriteFile(target, []byte(fileContent), 0644)
 }
