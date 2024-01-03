@@ -95,7 +95,7 @@ func main() {
 			check(err)
 			fullSrcImages := exercisePath + "/" + exercise + "/images"
 			if _, err := os.Stat(fullSrcImages); err == nil {
-				fullTgtImages := targetDir + "/" + index + "-" + mapping.Name + "/images"
+				fullTgtImages := targetDir + "/" + index + "-" + mapping.Name + "/" + subIndex + "-" + exercise + "/images"
 				err = shutil.CopyTree(fullSrcImages, fullTgtImages, nil)
 				check(err)
 			}
