@@ -91,7 +91,7 @@ func main() {
 			fullSrc := exercisePath + "/" + exercise + "/README.md"
 			fullTgt := targetDir + "/" + index + "-" + mapping.Name + "/" + subIndex + "-" + exercise + ".md"
 			fmt.Println(fullSrc + " to " + fullTgt)
-			err = shutil.CopyFile(fullSrc, fullTgt, false)
+			err = addWeightToHeader(fullSrc, fullTgt, j+1)
 			check(err)
 			fullSrcImages := exercisePath + "/" + exercise + "/images"
 			if _, err := os.Stat(fullSrcImages); err == nil {
